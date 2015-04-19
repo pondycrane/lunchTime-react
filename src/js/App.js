@@ -1,4 +1,7 @@
 var React = require('react');
-var Parent = require("./Parent")
+var FluxLunchwhat = require("./components/FluxLunchwhat.react");
+var OrderData = require('./OrderData');
 
-React.render(<Parent />, document.getElementById('app'));
+OrderData.init();
+console.log(localStorage.getItem('order'));
+React.render(<FluxLunchwhat />, document.getElementById('app'));
