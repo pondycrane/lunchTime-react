@@ -1,20 +1,48 @@
 var React = require('react');
 var FluxOrderEntry = require("./FluxOrderEntry.react");
+var lunchorderStore = require("../stores/LunchorderStore")
+var lunchwhatActions = require("../actions/LunchwhatActions");
+
+
+
 var FluxOrder = React.createClass({
+  getInitialState: function() {
+    return {
+      list: lunchorderStore.getList()
+    }
+  },
+  componentDidMount: function(){
+    lunchorderStore.addChangeListener(this._onChange);
+  },
+  componentWillUnmount: function() {
+    lunchorderStore.removeChangeListener(this._onChange);
+  },
+  handleAddItem: function(newItem) {
+    lunchwhatActions.addItem(newItem);
+  },
+  handleRemoveItem: function(index) {
+    lunchwhatActions.removeItem(index);
+  },
+  _onChange: function() {
+    this.setState({
+      list: lunchorderStore.getList()
+    })
+  },
   render: function(){
-    var FluxOrderNodes = this.props.data.map(function(order){
-      return (
-        <FluxOrderEntry name={order.name} dish={order.dish}>
-        </FluxOrderEntry>
-      )
-    });
+    var orders = [];
+    var allOrders = this.state.list;
+    for (var key in allOrders) {
+      orders.push(<FluxOrderEntry name={allOrders[key].name} dish={allOrders[key].dish} index={key} />);
+    }
     return (
       <div id="FluxOrder">
         <table>
-          <tr>
-            <th>Name</th><th>Dish</th>
-          </tr>
-          {FluxOrderNodes}
+          <tbody>
+            <tr>
+              <th>Name</th><th>Dish</th>
+            </tr>
+            {orders}
+          </tbody>
         </table>
       </div>
     )
