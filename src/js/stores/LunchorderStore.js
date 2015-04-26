@@ -16,6 +16,7 @@ var _store = {
 
 var addItem = function(item) {
   _store.list.push(item);
+  console.log(_store.list);
 }
 
 var removeItem = function(index) {

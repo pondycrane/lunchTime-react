@@ -1,7 +1,6 @@
 var React = require('react');
 var FluxOrderEntry = require("./FluxOrderEntry.react");
-var lunchorderStore = require("../stores/LunchorderStore")
-var lunchwhatActions = require("../actions/LunchwhatActions");
+var lunchorderStore = require("../stores/LunchorderStore"); 
 
 
 
@@ -16,12 +15,6 @@ var FluxOrder = React.createClass({
   },
   componentWillUnmount: function() {
     lunchorderStore.removeChangeListener(this._onChange);
-  },
-  handleAddItem: function(newItem) {
-    lunchwhatActions.addItem(newItem);
-  },
-  handleRemoveItem: function(index) {
-    lunchwhatActions.removeItem(index);
   },
   _onChange: function() {
     this.setState({

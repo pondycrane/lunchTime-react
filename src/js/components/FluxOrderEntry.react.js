@@ -8,13 +8,11 @@ var FluxOrderEntry = React.createClass({
   },
   render: function() {
     return (
-      <div className="FluxOrderEntry">
-        <tr>
+        <tr id="FluxOrderEntry">
           <td>{this.props.name}</td>
           <td>{this.props.dish}</td>
           <td><button type="button" onClick={this.removeItem} >delete</button></td>
         </tr>
-      </div>
     )
   }
 });
