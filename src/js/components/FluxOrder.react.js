@@ -1,6 +1,6 @@
 var React = require('react');
 var FluxOrderEntry = require("./FluxOrderEntry.react");
-var lunchorderStore = require("../stores/LunchorderStore"); 
+var lunchorderStore = require("../stores/LunchorderStore");
 
 
 
