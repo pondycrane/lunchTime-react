@@ -13,6 +13,20 @@ var _store = {
     {name: "Walker", dish: "Paul"}
   ]
 }
+var _orders = {
+  list: []
+}
+
+var firebaseRef =  new Firebase("https://lunchwhat.firebaseio.com/Orders/");
+console.log(firebaseRef);
+
+
+firebaseRef.on("child_added", function(dataSnapshot) {
+  var order = dataSnapshot.val();
+  _orders.list.push(order);
+  lunchorderStore.emit(CHANGE_EVENT);
+});
+
 
 var addItem = function(item) {
   _store.list.push(item);
@@ -31,6 +45,9 @@ var lunchorderStore = objectAssign({}, EventEmitter.prototype, {
   },
   getList: function() {
     return _store.list
+  },
+  getOrderList: function() {
+    return _orders.list
   }
 });
 
