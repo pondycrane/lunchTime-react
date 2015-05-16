@@ -4,7 +4,7 @@ var objectAssign = require('react/lib/Object.assign');
 var EventEmitter = require('events').EventEmitter;
 
 var CHANGE_EVENT = 'change';
-
+/*
 var _store = {
   list: [
     {name: "Pete Hunt", dish: "fish", price: "20", createdAtString: "Mon May 04 2015", category: "consume"},
@@ -13,13 +13,13 @@ var _store = {
     {name: "Mr. Anderson", dish: "huHa", price: "20", createdAtString: "Mon May 04 2015", category: "consume"},
     {name: "Walker", dish: "Paul", price: "20", createdAtString: "Mon May 04 2015", category: "consume"}
   ]
-}
+}*/
+
 var _orders = {
   list: []
 }
 
 var firebaseRef =  new Firebase("https://lunchwhat.firebaseio.com/Orders/");
-console.log(firebaseRef);
 
 
 firebaseRef.on("child_added", function(dataSnapshot) {
@@ -28,13 +28,28 @@ firebaseRef.on("child_added", function(dataSnapshot) {
   lunchorderStore.emit(CHANGE_EVENT);
 });
 
+firebaseRef.on("child_removed", function(dataSnapshot) {
+  var order = dataSnapshot.val();
+  for (i=0; i<_orders.list.length; i++) {
+    if (_orders.list[i]._id === order._id) {
+      var index = i
+    }
+  }
+  _orders.list.splice(index, 1);
+  lunchorderStore.emit(CHANGE_EVENT);
+});
+
 
 var addItem = function(item) {
-  _store.list.push(item);
+  firebaseRef.push(item);
+  //_store.list.push(item);
 }
 
 var removeItem = function(index) {
-  _store.list.splice(index, 1);
+  firebaseRef.orderByChild('_id').equalTo(index).on("child_added", function(snap) {
+    snap.ref().remove();
+  });
+  //_store.list.splice(index, 1);
 }
 
 var lunchorderStore = objectAssign({}, EventEmitter.prototype, {
@@ -44,11 +59,34 @@ var lunchorderStore = objectAssign({}, EventEmitter.prototype, {
   removeChangeListener: function(cb) {
     this.removeListener(CHANGE_EVENT, cb);
   },
-  getList: function() {
-    return _store.list
-  },
-  getOrderList: function() {
-    return _orders.list
+  /*
+  getList: function(mode) {
+    if (mode == 'today') {
+      toReturn = []
+      today = new Date();
+      for (i=0; i<_store.list.length; i++) {
+        if (today.toDateString() === _store.list[i].createdAtString) {
+          toReturn.push(_store.list[i]);
+        }
+      }
+      return toReturn
+    } else {
+      return _store.list
+    }
+  },*/
+  getOrderList: function(mode) {
+    if (mode == 'today') {
+      toReturn = []
+      today = new Date();
+      for (i=0; i<_orders.list.length; i++) {
+        if (today.toDateString() === _orders.list[i].createdAtString) {
+          toReturn.push(_orders.list[i]);
+        }
+      }
+      return toReturn
+    } else {
+      return _orders.list
+    }
   }
 });
 

@@ -3,6 +3,17 @@ var lunchwhatActions = require("../actions/LunchwhatActions");
 var lunchorderStore = require("../stores/LunchorderStore");
 var FluxTodayDisplay = require("./FluxTodayDisplay.react");
 
+function makeid()
+{
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    for( var i=0; i < 17; i++ )
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+    return text;
+}
+
 var FluxToday = React.createClass({
   addItem: function(event){
     event.preventDefault();
@@ -15,7 +26,8 @@ var FluxToday = React.createClass({
     document.getElementById('priceInput').value = '';
     thisAdd.category = 'consume';
     thisAdd.createdAt = new Date();
-    thisAdd.createdAtString = (new Date()).toDateString(); 
+    thisAdd.createdAtString = (new Date()).toDateString();
+    thisAdd._id = makeid(); 
     lunchwhatActions.addItem(thisAdd);
   },
   render: function() {

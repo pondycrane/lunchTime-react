@@ -7,7 +7,7 @@ var lunchorderStore = require("../stores/LunchorderStore");
 var FluxOrder = React.createClass({
   getInitialState: function() {
     return {
-      list: lunchorderStore.getList()
+      list: lunchorderStore.getOrderList('today')
     }
   },
   componentDidMount: function(){
@@ -18,14 +18,14 @@ var FluxOrder = React.createClass({
   },
   _onChange: function() {
     this.setState({
-      list: lunchorderStore.getList()
+      list: lunchorderStore.getOrderList('today')
     })
   },
   render: function(){
     var orders = [];
     var allOrders = this.state.list;
-    for (var key in allOrders) {
-      orders.push(<FluxOrderEntry name={allOrders[key].name} dish={allOrders[key].dish} price={allOrders[key].price} createdAtString={allOrders[key].createdAtString} index={key} />);
+    for (var key=0; key < allOrders.length; key++) {
+      orders.push(<FluxOrderEntry name={allOrders[key].name} dish={allOrders[key].dish} price={allOrders[key].price} createdAtString={allOrders[key].createdAtString} _id={allOrders[key]._id} />);
     }
     return (
       <div id="FluxOrder">

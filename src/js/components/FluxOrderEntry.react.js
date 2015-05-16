@@ -3,7 +3,7 @@ var lunchwhatActions = require("../actions/LunchwhatActions");
 
 var FluxOrderEntry = React.createClass({
   removeItem: function() {
-    var index = this.props.index;
+    var index = this.props._id;
     lunchwhatActions.removeItem(index);
   },
   render: function() {

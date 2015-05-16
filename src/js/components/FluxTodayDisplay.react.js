@@ -5,7 +5,7 @@ var FluxTodayDisplayEntry = require('./FluxTodayDisplayEntry.react');
 var FluxTodayDisplay = React.createClass({
   getInitialState: function(){
     return {
-      list: lunchorderStore.getList()
+      list: lunchorderStore.getOrderList('today')
     }
   },
   summarize: function() {
@@ -30,7 +30,7 @@ var FluxTodayDisplay = React.createClass({
   },
   _onChange: function() {
     this.setState({
-      list: lunchorderStore.getList()
+      list: lunchorderStore.getOrderList('today')
     })
   },
   render: function() {
