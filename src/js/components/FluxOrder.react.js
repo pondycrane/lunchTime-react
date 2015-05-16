@@ -25,14 +25,14 @@ var FluxOrder = React.createClass({
     var orders = [];
     var allOrders = this.state.list;
     for (var key in allOrders) {
-      orders.push(<FluxOrderEntry name={allOrders[key].name} dish={allOrders[key].dish} index={key} />);
+      orders.push(<FluxOrderEntry name={allOrders[key].name} dish={allOrders[key].dish} price={allOrders[key].price} createdAtString={allOrders[key].createdAtString} index={key} />);
     }
     return (
       <div id="FluxOrder">
         <table>
           <tbody>
             <tr>
-              <th>Name</th><th>Dish</th>
+              <th>Name</th><th>Dish</th><th>Price</th><th>CreatedAt</th>
             </tr>
             {orders}
           </tbody>

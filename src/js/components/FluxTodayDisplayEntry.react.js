@@ -6,6 +6,7 @@ var FluxTodayDisplayEntry = React.createClass({
       <tr>
         <td>{this.props.dish}</td>
         <td>{this.props.names}</td>
+        <td>{this.props.total}</td>
       </tr>
     )
   }

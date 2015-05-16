@@ -11,6 +11,8 @@ var FluxOrderEntry = React.createClass({
         <tr id="FluxOrderEntry">
           <td>{this.props.name}</td>
           <td>{this.props.dish}</td>
+          <td>{this.props.price}</td>
+          <td>{this.props.createdAtString}</td>
           <td><button type="button" onClick={this.removeItem} >delete</button></td>
         </tr>
     )

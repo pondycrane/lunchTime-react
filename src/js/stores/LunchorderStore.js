@@ -7,10 +7,11 @@ var CHANGE_EVENT = 'change';
 
 var _store = {
   list: [
-    {name: "Pete Hunt", dish: "fish"},
-    {name: "Hank Huang", dish: "shao-la"},
-    {name: "Mr. Anderson", dish: "huHa"},
-    {name: "Walker", dish: "Paul"}
+    {name: "Pete Hunt", dish: "fish", price: "20", createdAtString: "Mon May 04 2015", category: "consume"},
+    {name: "Pete Hunt", dish: "fish", price: "20", createdAtString: "Mon May 04 2015", category: "consume"},
+    {name: "Hank Huang", dish: "shao-la", price: "20", createdAtString: "Mon May 04 2015", category: "consume"},
+    {name: "Mr. Anderson", dish: "huHa", price: "20", createdAtString: "Mon May 04 2015", category: "consume"},
+    {name: "Walker", dish: "Paul", price: "20", createdAtString: "Mon May 04 2015", category: "consume"}
   ]
 }
 var _orders = {
