@@ -2,6 +2,7 @@ var React = require('react');
 var lunchwhatActions = require("../actions/LunchwhatActions");
 var lunchorderStore = require("../stores/LunchorderStore");
 var FluxTodayDisplay = require("./FluxTodayDisplay.react");
+var FluxOrder = require("./FluxOrder.react");
 
 function makeid()
 {
@@ -27,7 +28,7 @@ var FluxToday = React.createClass({
     thisAdd.category = 'consume';
     thisAdd.createdAt = new Date();
     thisAdd.createdAtString = (new Date()).toDateString();
-    thisAdd._id = makeid(); 
+    thisAdd._id = makeid();
     lunchwhatActions.addItem(thisAdd);
   },
   render: function() {
@@ -38,6 +39,7 @@ var FluxToday = React.createClass({
           <input id="nameInput"></input><input id="dishInput"></input><input id="priceInput"></input><button onClick={this.addItem} type="submit">Add order</button>
         </form>
         <FluxTodayDisplay/>
+        <FluxOrder/>
       </div>
     )
   }

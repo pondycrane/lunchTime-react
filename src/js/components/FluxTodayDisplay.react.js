@@ -12,13 +12,16 @@ var FluxTodayDisplay = React.createClass({
     conclude = {}
     temp = this.state.list
     for (var i=0; i<temp.length; i++) {
-      if (Object.keys(conclude).indexOf(temp[i].dish)<0) {
-        conclude[temp[i].dish] = {}
-        conclude[temp[i].dish]['names'] = []
-        conclude[temp[i].dish]['total'] = 0
+      indexName = temp[i].dish+'_'+temp[i].price.toString()
+      if (Object.keys(conclude).indexOf(indexName)<0 ) {
+        conclude[indexName] = {}
+        conclude[indexName]['names'] = []
+        conclude[indexName]['total'] = 0
+        conclude[indexName]['dish'] = temp[i].dish
+        conclude[indexName]['price'] = temp[i].price
       }
-      conclude[temp[i].dish]['names'].push(temp[i].name)
-      conclude[temp[i].dish]['total'] += parseFloat(temp[i].price)
+      conclude[indexName]['names'].push(temp[i].name)
+      conclude[indexName]['total'] += parseFloat(temp[i].price)
     }
     return conclude
   },
@@ -37,12 +40,12 @@ var FluxTodayDisplay = React.createClass({
     concludes = []
     nowState = this.summarize()
     for (key in nowState) {
-      concludes.push(<FluxTodayDisplayEntry dish={key} names={nowState[key]['names'].join(',')} total={nowState[key]['total']}/>);
+      concludes.push(<FluxTodayDisplayEntry price={nowState[key]['price']} dish={nowState[key]['dish']} names={nowState[key]['names'].join(',')} total={nowState[key]['total']}/>);
     }
     return (
       <table>
         <tbody>
-          <tr><th>dish</th><th>names</th><th>price</th></tr>
+          <tr><th>dish</th><th>names</th><th>price</th><th>total</th></tr>
           {concludes}
         </tbody>
       </table>

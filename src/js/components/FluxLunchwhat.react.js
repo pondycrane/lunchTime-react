@@ -8,7 +8,6 @@ var FluxLunchwhat = React.createClass({
     return (
       <div id="FluxLunchwhat">
         <FluxToday/>
-        <FluxOrder data={this.props.data}/>
         <FluxMessage/>
       </div>
     )
