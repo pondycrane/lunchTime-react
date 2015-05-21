@@ -21,8 +21,7 @@ var _orders = {
 
 var firebaseRef =  new Firebase("https://lunchwhat.firebaseio.com/Orders/");
 
-
-firebaseRef.on("child_added", function(dataSnapshot) {
+firebaseRef.limitToLast(30).on("child_added", function(dataSnapshot) {
   var order = dataSnapshot.val();
   _orders.list.push(order);
   lunchorderStore.emit(CHANGE_EVENT);

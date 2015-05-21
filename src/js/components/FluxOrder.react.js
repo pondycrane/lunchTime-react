@@ -3,7 +3,6 @@ var FluxOrderEntry = require("./FluxOrderEntry.react");
 var lunchorderStore = require("../stores/LunchorderStore");
 
 
-
 var FluxOrder = React.createClass({
   getInitialState: function() {
     return {

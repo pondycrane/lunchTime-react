@@ -3,6 +3,7 @@ var lunchwhatActions = require("../actions/LunchwhatActions");
 var userStore = require("../stores/UserStore");
 var FluxTodayDisplay = require("./FluxTodayDisplay.react");
 var FluxOrder = require("./FluxOrder.react");
+var historyStore = require("../stores/HistoryStore");
 
 function makeid() {
     var text = "";
@@ -13,6 +14,16 @@ function makeid() {
 }
 
 var UserOptions = React.createClass({
+  getInitialState: function() {
+    return {
+      value: 'Peter'
+    }
+  },
+  change: function() {
+    nowName = document.getElementById('nameInput').value;
+    this.setState({value: nowName});
+    historyStore.updateHistory(nowName);
+  },
   render: function() {
     var options = this.props.data.map(function (user) {
       return (
@@ -22,7 +33,7 @@ var UserOptions = React.createClass({
       );
     });
     return (
-      <select id="nameInput">
+      <select id="nameInput" onChange={this.change} value={this.state.value}>
         {options}
       </select>
     );

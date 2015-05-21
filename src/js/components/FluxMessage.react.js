@@ -1,24 +1,27 @@
 var React = require('react');
 var lunchorderStore = require("../stores/LunchorderStore");
 var HistoryEntry = require("./HistoryEntry.react");
+var historyStore = require("../stores/HistoryStore");
 
 var FluxMessage = React.createClass({
   getInitialState: function() {
     return {
-      orderList: lunchorderStore.getOrderList()
+      orderList: historyStore.getHistoryList()
+      //orderList: lunchorderStore.getOrderList()
     }
   },
   componentDidMount: function() {
     var dom = React.findDOMNode(this);
-    lunchorderStore.addChangeListener(this._onChange);
+    historyStore.addChangeListener(this._onChange);
+    //lunchorderStore.addChangeListener(this._onChange);
   },
   _onChange: function() {
     this.setState({
-      orderList: lunchorderStore.getOrderList()
+      orderList: historyStore.getHistoryList()
     })
   },
   componentWillUnmount: function() {
-    lunchorderStore.removeChangeListener(this._onChange);
+    historyStore.removeChangeListener(this._onChange);
   },  render: function(){
     var orders = [];
     var allOrders = this.state.orderList;
