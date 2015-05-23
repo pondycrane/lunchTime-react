@@ -2,6 +2,9 @@ var React = require('react');
 var lunchwhatActions = require("../actions/LunchwhatActions");
 var userStore = require("../stores/UserStore");
 var FluxTodayDisplay = require("./FluxTodayDisplay.react");
+var FilePickerMenu = require("./FilePickerMenu.react");
+var CountDown = require("./CountDown.react");
+//var CountdownTimer = require("./CountdownTimer.react")
 var FluxOrder = require("./FluxOrder.react");
 var historyStore = require("../stores/HistoryStore");
 
@@ -87,7 +90,8 @@ var FluxToday = React.createClass({
   render: function() {
     return (
       <div id="FluxToday">
-        <p>This is Today</p>
+        <CountDown/>
+        <FilePickerMenu/>
         <form>
           <UserOptions data={this.state.users}/>
           <input id="dishInput" placeholder="Dish Name"></input>
