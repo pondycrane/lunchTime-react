@@ -14,6 +14,12 @@ var lunchwhatActions = {
       actionType: appConstants.REMOVE_ITEM,
       data: index
     })
+  },
+  adjustUserAmount: function(index){
+    AppDispatcher.handleAction({
+      actionType: appConstants.ADJUST_USER_AMOUNT,
+      data: index
+    })
   }
 };
 

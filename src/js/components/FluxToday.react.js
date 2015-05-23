@@ -4,7 +4,6 @@ var userStore = require("../stores/UserStore");
 var FluxTodayDisplay = require("./FluxTodayDisplay.react");
 var FilePickerMenu = require("./FilePickerMenu.react");
 var CountDown = require("./CountDown.react");
-//var CountdownTimer = require("./CountdownTimer.react")
 var FluxOrder = require("./FluxOrder.react");
 var historyStore = require("../stores/HistoryStore");
 
@@ -85,7 +84,13 @@ var FluxToday = React.createClass({
     thisAdd.createdAt = new Date();
     thisAdd.createdAtString = (new Date()).toDateString();
     thisAdd._id = makeid();
+    thisAdjust = {
+      user_name: thisAdd.name,
+      actionType: thisAdd.category,
+      credit: thisAdd.price
+    }
     lunchwhatActions.addItem(thisAdd);
+    lunchwhatActions.adjustUserAmount(thisAdjust); 
   },
   render: function() {
     return (

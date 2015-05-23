@@ -58,21 +58,6 @@ var lunchorderStore = objectAssign({}, EventEmitter.prototype, {
   removeChangeListener: function(cb) {
     this.removeListener(CHANGE_EVENT, cb);
   },
-  /*
-  getList: function(mode) {
-    if (mode == 'today') {
-      toReturn = []
-      today = new Date();
-      for (i=0; i<_store.list.length; i++) {
-        if (today.toDateString() === _store.list[i].createdAtString) {
-          toReturn.push(_store.list[i]);
-        }
-      }
-      return toReturn
-    } else {
-      return _store.list
-    }
-  },*/
   getOrderList: function(mode) {
     if (mode == 'today') {
       toReturn = []

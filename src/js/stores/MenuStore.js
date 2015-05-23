@@ -5,5 +5,6 @@ var EventEmitter = require('events').EventEmitter;
 
 var CHANGE_EVENT = 'change';
 var _menu = {
-  FpApiKey: "AiD66Zr4PS4aUqLQzYQmbz"
+  FpApiKey: "AiD66Zr4PS4aUqLQzYQmbz",
+  restaurants = []
 }

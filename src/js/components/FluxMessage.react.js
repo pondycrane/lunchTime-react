@@ -2,12 +2,16 @@ var React = require('react');
 var lunchorderStore = require("../stores/LunchorderStore");
 var HistoryEntry = require("./HistoryEntry.react");
 var historyStore = require("../stores/HistoryStore");
+var userStore = require("../stores/UserStore");
 
 var FluxMessage = React.createClass({
   getInitialState: function() {
     return {
-      orderList: historyStore.getHistoryList()
-      //orderList: lunchorderStore.getOrderList()
+      orderList: historyStore.getHistoryList(),
+      currentUser: {
+        user_name: "Peter",
+        user_amount: "0"
+      }
     }
   },
   componentDidMount: function() {
@@ -16,9 +20,23 @@ var FluxMessage = React.createClass({
     //lunchorderStore.addChangeListener(this._onChange);
   },
   _onChange: function() {
-    this.setState({
-      orderList: historyStore.getHistoryList()
-    })
+    orderList = historyStore.getHistoryList()
+    userDetail = userStore.getSpecificUser()
+    if (this.state.orderList.length > 0) {
+      currentUser = userStore.getSpecificUser(orderList[0].name);
+      this.setState({
+        orderList: orderList,
+        currentUser: currentUser
+      })
+    } else {
+      this.setState({
+        orderList: orderList,
+        currentUser: {
+          user_name: "Peter",
+          user_amount: "0"
+        }
+      })
+    }
   },
   componentWillUnmount: function() {
     historyStore.removeChangeListener(this._onChange);
@@ -30,7 +48,7 @@ var FluxMessage = React.createClass({
     }
     return (
       <div id="FluxMessage">
-        <p>and this is the FluxMessage.</p>
+        <h2>{this.state.currentUser.user_name} got {this.state.currentUser.user_amount}</h2>
         <table>
           <tbody>
             <tr>
