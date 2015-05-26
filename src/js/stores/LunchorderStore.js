@@ -26,7 +26,7 @@ firebaseRef.limitToLast(30).on("child_added", function(dataSnapshot) {
   _orders.list.push(order);
   lunchorderStore.emit(CHANGE_EVENT);
 });
-
+/*
 firebaseRef.on("child_removed", function(dataSnapshot) {
   var order = dataSnapshot.val();
   for (i=0; i<_orders.list.length; i++) {
@@ -37,7 +37,7 @@ firebaseRef.on("child_removed", function(dataSnapshot) {
   _orders.list.splice(index, 1);
   lunchorderStore.emit(CHANGE_EVENT);
 });
-
+*/
 
 var addItem = function(item) {
   firebaseRef.push(item);

@@ -5,6 +5,11 @@ var userStore = require("../stores/UserStore");
 var FluxOrderEntry = React.createClass({
   removeItem: function() {
     var index = this.props._id;
+    if (typeof this.props.removeItem === 'function') {
+        this.props.removeItem(index);
+    }
+    /*
+    var index = this.props._id;
     lunchwhatActions.removeItem(index);
     thisAdjust = {
       user_name: this.props.name,
@@ -13,6 +18,8 @@ var FluxOrderEntry = React.createClass({
     }
     lunchwhatActions.addItem(thisAdd);
     lunchwhatActions.adjustUserAmount(thisAdjust);
+    */
+
   },
   render: function() {
     return (

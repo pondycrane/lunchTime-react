@@ -10,18 +10,20 @@ var FluxTodayDisplay = React.createClass({
   },
   summarize: function() {
     conclude = {}
-    temp = this.state.list
-    for (var i=0; i<temp.length; i++) {
-      indexName = temp[i].dish+'_'+temp[i].price.toString()
-      if (Object.keys(conclude).indexOf(indexName)<0 ) {
-        conclude[indexName] = {}
-        conclude[indexName]['names'] = []
-        conclude[indexName]['total'] = 0
-        conclude[indexName]['dish'] = temp[i].dish
-        conclude[indexName]['price'] = temp[i].price
+    if (typeof this.props.list != "undefined") {
+      temp = this.props.list
+      for (var i=0; i<temp.length; i++) {
+        indexName = temp[i].dish+'_'+temp[i].price.toString()
+        if (Object.keys(conclude).indexOf(indexName)<0 ) {
+          conclude[indexName] = {}
+          conclude[indexName]['names'] = []
+          conclude[indexName]['total'] = 0
+          conclude[indexName]['dish'] = temp[i].dish
+          conclude[indexName]['price'] = temp[i].price
+        }
+        conclude[indexName]['names'].push(temp[i].name)
+        conclude[indexName]['total'] += parseFloat(temp[i].price)
       }
-      conclude[indexName]['names'].push(temp[i].name)
-      conclude[indexName]['total'] += parseFloat(temp[i].price)
     }
     return conclude
   },

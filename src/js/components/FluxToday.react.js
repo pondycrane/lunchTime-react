@@ -1,11 +1,13 @@
-var React = require('react');
+var React = require('react/addons');
 var lunchwhatActions = require("../actions/LunchwhatActions");
 var userStore = require("../stores/UserStore");
-var FluxTodayDisplay = require("./FluxTodayDisplay.react");
 var FilePickerMenu = require("./FilePickerMenu.react");
 var CountDown = require("./CountDown.react");
 var FluxOrder = require("./FluxOrder.react");
 var historyStore = require("../stores/HistoryStore");
+var FluxMessage = require("./FluxMessage.react");
+
+firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
 
 function makeid() {
     var text = "";
@@ -16,15 +18,17 @@ function makeid() {
 }
 
 var UserOptions = React.createClass({
-  getInitialState: function() {
+  getInitialState: function(){
     return {
-      value: 'Peter'
+      currentUser: 'Peter'
     }
   },
   change: function() {
     nowName = document.getElementById('nameInput').value;
-    this.setState({value: nowName});
-    historyStore.updateHistory(nowName);
+    this.setState({currentUser: nowName});
+    if (typeof this.props.onChange === 'function') {
+        this.props.onChange(nowName);
+    }
   },
   render: function() {
     var options = this.props.data.map(function (user) {
@@ -35,7 +39,7 @@ var UserOptions = React.createClass({
       );
     });
     return (
-      <select id="nameInput" onChange={this.change} value={this.state.value}>
+      <select id="nameInput" onChange={this.change} value={this.state.currentUser} ref="nameInput">
         {options}
       </select>
     );
@@ -43,9 +47,15 @@ var UserOptions = React.createClass({
 });
 
 var FluxToday = React.createClass({
+  mixins: [ReactFireMixin],
+  componentWillMount: function() {
+    this.bindAsArray(firebaseRef.orderByChild('name').equalTo(this.state.currentUser).limitToLast(30), "orderList");
+  },
   getInitialState: function() {
     return {
-      users: userStore.getUserList()
+      users: userStore.getUserList(),
+      currentUser: 'Peter',
+      currentUserAmount: "0"
     }
   },
   componentDidMount: function(){
@@ -53,11 +63,6 @@ var FluxToday = React.createClass({
   },
   componentWillUnmount: function() {
     userStore.removeChangeListener(this._onChange);
-  },
-  _onChange: function() {
-    this.setState({
-      list: userStore.getUserList()
-    })
   },
   addItem: function(event){
     event.preventDefault();
@@ -90,7 +95,26 @@ var FluxToday = React.createClass({
       credit: thisAdd.price
     }
     lunchwhatActions.addItem(thisAdd);
-    lunchwhatActions.adjustUserAmount(thisAdjust); 
+    lunchwhatActions.adjustUserAmount(thisAdjust);
+  },
+  handleChange: function(nowUser) {
+    //currentUser = React.findDOMNode(this.refs.userOptions.refs.nameInput).value;
+    currentUser = nowUser;
+    temp = this.state;
+    temp.currentUser = currentUser;
+    for (var i=0; i<this.state.users.length; i++) {
+      if (this.state.users[i].user_name == this.state.currentUser) {
+        temp.currentUserAmount = this.state.users[i].user_amount
+      }
+    }
+    this.setState(temp);
+    console.log(temp);
+    this.bindAsArray(firebaseRef.orderByChild('name').equalTo(this.state.currentUser).limitToLast(30), "orderList");
+  },
+  _onChange: function() {
+    this.setState({
+      list: userStore.getUserList()
+    })
   },
   render: function() {
     return (
@@ -98,17 +122,16 @@ var FluxToday = React.createClass({
         <CountDown/>
         <FilePickerMenu/>
         <form>
-          <UserOptions data={this.state.users}/>
+          <UserOptions data={this.state.users} currentUser={this.state.currentUser} onChange={this.handleChange} ref="userOptions"/>
           <input id="dishInput" placeholder="Dish Name"></input>
           <input id="priceInput" placeholder="Price"></input>
           <button onClick={this.addItem} type="submit">Add order</button>
         </form>
-        <FluxTodayDisplay/>
         <FluxOrder/>
+        <FluxMessage orderList={this.state.orderList} currentUser={this.state.currentUser} currentUserAmount={this.state.currentUserAmount} ref='fluxMessage'/>
       </div>
     )
   }
 })
-//<input id="nameInput" placeholder="User Name"></input>
 
 module.exports = FluxToday;
