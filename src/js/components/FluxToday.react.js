@@ -1,13 +1,11 @@
 var React = require('react/addons');
-var lunchwhatActions = require("../actions/LunchwhatActions");
-var userStore = require("../stores/UserStore");
 var FilePickerMenu = require("./FilePickerMenu.react");
 var CountDown = require("./CountDown.react");
 var FluxOrder = require("./FluxOrder.react");
-var historyStore = require("../stores/HistoryStore");
 var FluxMessage = require("./FluxMessage.react");
 
 firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
+firebaseUserRef = new Firebase("https://lunchwhat.firebaseio.com/Users/");
 
 function makeid() {
     var text = "";
@@ -50,19 +48,14 @@ var FluxToday = React.createClass({
   mixins: [ReactFireMixin],
   componentWillMount: function() {
     this.bindAsArray(firebaseRef.orderByChild('name').equalTo(this.state.currentUser).limitToLast(30), "orderList");
+	this.bindAsArray(firebaseUserRef, "users"); 
   },
   getInitialState: function() {
     return {
-      users: userStore.getUserList(),
+	users: [{"user_name":"Peter","user_amount":"0"}],
       currentUser: 'Peter',
       currentUserAmount: "0"
     }
-  },
-  componentDidMount: function(){
-    userStore.addChangeListener(this._onChange);
-  },
-  componentWillUnmount: function() {
-    userStore.removeChangeListener(this._onChange);
   },
   addItem: function(event){
     event.preventDefault();
@@ -94,11 +87,16 @@ var FluxToday = React.createClass({
       actionType: thisAdd.category,
       credit: thisAdd.price
     }
-    lunchwhatActions.addItem(thisAdd);
-    lunchwhatActions.adjustUserAmount(thisAdjust);
+    firebaseRef.push(thisAdd);
+	newAmount = (parseFloat(this.state.currentUserAmount)-parseFloat(thisAdd.price)).toString(); 
+	this.state.currentUserAmount = newAmount; 
+    firebaseUserRef.orderByChild("user_name").equalTo(thisAdd.name).on('child_added', function(snapshot){
+      tempFirebaseRef =  new Firebase("https://lunchwhat.firebaseio.com/Users/"+snapshot.key());
+      tempFirebaseRef.child('user_amount').set(newAmount);
+      tempFirebaseRef.off();
+    });
   },
   handleChange: function(nowUser) {
-    //currentUser = React.findDOMNode(this.refs.userOptions.refs.nameInput).value;
     currentUser = nowUser;
     temp = this.state;
     temp.currentUser = currentUser;
@@ -111,10 +109,25 @@ var FluxToday = React.createClass({
     console.log(temp);
     this.bindAsArray(firebaseRef.orderByChild('name').equalTo(this.state.currentUser).limitToLast(30), "orderList");
   },
-  _onChange: function() {
-    this.setState({
-      list: userStore.getUserList()
-    })
+  removeItem: function(name, price) {
+	  console.log(name); 
+	  console.log(price);
+	  for (i=0; i<this.state.users.length; i++) {
+		  if (this.state.users[i].user_name == name) {
+			  currentAmount = this.state.users[i].user_amount; 
+		  }
+	  }
+	  console.log(currentAmount);
+	  newAmount = (parseFloat(currentAmount)+parseFloat(price)).toString(); 
+	  console.log(newAmount)
+    firebaseUserRef.orderByChild("user_name").equalTo(name).on('child_added', function(snapshot){
+      tempFirebaseRef =  new Firebase("https://lunchwhat.firebaseio.com/Users/"+snapshot.key());
+      tempFirebaseRef.child('user_amount').set(newAmount);
+      tempFirebaseRef.off();
+    });
+	if (this.state.currentUser == name) {
+		this.state.currentUserAmount = newAmount; 
+	}
   },
   render: function() {
     return (
@@ -127,7 +140,7 @@ var FluxToday = React.createClass({
           <input id="priceInput" placeholder="Price"></input>
           <button onClick={this.addItem} type="submit">Add order</button>
         </form>
-        <FluxOrder/>
+        <FluxOrder removeItem={this.removeItem}/>
         <FluxMessage orderList={this.state.orderList} currentUser={this.state.currentUser} currentUserAmount={this.state.currentUserAmount} ref='fluxMessage'/>
       </div>
     )

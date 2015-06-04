@@ -1,8 +1,5 @@
 var React = require('react');
-var lunchorderStore = require("../stores/LunchorderStore");
 var HistoryEntry = require("./HistoryEntry.react");
-var historyStore = require("../stores/HistoryStore");
-var userStore = require("../stores/UserStore");
 
 firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Users/");
 

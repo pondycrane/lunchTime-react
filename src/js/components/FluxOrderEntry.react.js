@@ -1,25 +1,11 @@
 var React = require('react');
-var lunchwhatActions = require("../actions/LunchwhatActions");
-var userStore = require("../stores/UserStore");
 
 var FluxOrderEntry = React.createClass({
   removeItem: function() {
     var index = this.props._id;
     if (typeof this.props.removeItem === 'function') {
-        this.props.removeItem(index);
+        this.props.removeItem(index, this.props.name, this.props.price);
     }
-    /*
-    var index = this.props._id;
-    lunchwhatActions.removeItem(index);
-    thisAdjust = {
-      user_name: this.props.name,
-      actionType: 'addCredit',
-      credit: this.props.price
-    }
-    lunchwhatActions.addItem(thisAdd);
-    lunchwhatActions.adjustUserAmount(thisAdjust);
-    */
-
   },
   render: function() {
     return (

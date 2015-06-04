@@ -27,10 +27,13 @@ var FluxOrder = React.createClass({
       list: lunchorderStore.getOrderList('today')
     })
   },
-  removeItem: function(index) {
+  removeItem: function(index, name, price) {
     firebaseRef.orderByChild('_id').equalTo(index).on("child_added", function(snap) {
       snap.ref().remove();
     });
+    if (typeof this.props.removeItem === 'function') {
+        this.props.removeItem(name, price);
+    }
   },
   render: function(){
     allOrders = []
