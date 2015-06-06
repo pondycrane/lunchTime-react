@@ -16,15 +16,17 @@ var FluxMessage = React.createClass({
     }
     return (
       <div id="FluxMessage">
-        <h2>{this.props.currentUser} got {this.props.currentUserAmount}</h2>
-        <table>
-          <tbody>
-            <tr>
-              <th>Name</th><th>Dish</th><th>Price</th><th>Date</th>
-            </tr>
-          </tbody>
-          {orders}
-        </table>
+        <h2 className="sub-header">{this.props.currentUser} got {this.props.currentUserAmount}</h2>
+		<div className="table-responsive">
+			<table className="table table-striped">
+			  <tbody>
+				<tr>
+				  <th>Name</th><th>Dish</th><th>Price</th><th>Date</th>
+				</tr>
+				{orders}
+			  </tbody>
+			</table>
+		</div>
       </div>
     )
   }

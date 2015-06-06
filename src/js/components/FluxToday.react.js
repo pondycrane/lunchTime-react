@@ -131,9 +131,10 @@ var FluxToday = React.createClass({
   },
   render: function() {
     return (
-      <div id="FluxToday">
-        <CountDown/>
+      <div id="FluxToday" class="mui-container">
         <FilePickerMenu/>
+		<h2 className="sub-header">Order now!</h2>
+		<CountDown/>
         <form>
           <UserOptions data={this.state.users} currentUser={this.state.currentUser} onChange={this.handleChange} ref="userOptions"/>
           <input id="dishInput" placeholder="Dish Name"></input>

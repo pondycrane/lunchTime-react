@@ -1,6 +1,5 @@
 var React = require('react');
 var FluxOrderEntry = require("./FluxOrderEntry.react");
-var lunchorderStore = require("../stores/LunchorderStore");
 var FluxTodayDisplay = require("./FluxTodayDisplay.react");
 
 firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
@@ -12,20 +11,8 @@ var FluxOrder = React.createClass({
   },
   getInitialState: function() {
     return {
-      list: lunchorderStore.getOrderList('today'),
       orderList: []
     }
-  },
-  componentDidMount: function(){
-    lunchorderStore.addChangeListener(this._onChange);
-  },
-  componentWillUnmount: function() {
-    lunchorderStore.removeChangeListener(this._onChange);
-  },
-  _onChange: function() {
-    this.setState({
-      list: lunchorderStore.getOrderList('today')
-    })
   },
   removeItem: function(index, name, price) {
     firebaseRef.orderByChild('_id').equalTo(index).on("child_added", function(snap) {
@@ -52,11 +39,13 @@ var FluxOrder = React.createClass({
     }
     return (
       <div id="FluxOrder">
+		<h2 className="sub-header">Today's summary</h2>
         <FluxTodayDisplay list={allOrders}/>
-        <table>
+		<h2 className="sub-header">Today's order listing</h2>
+        <table className="table table-striped">
           <tbody>
             <tr>
-              <th>Name</th><th>Dish</th><th>Price</th><th>CreatedAt</th>
+              <th>Name</th><th>Dish</th><th>Price</th><th>CreatedAt</th><th></th>
             </tr>
             {orders}
           </tbody>
