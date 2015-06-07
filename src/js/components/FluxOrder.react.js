@@ -7,7 +7,7 @@ firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
 var FluxOrder = React.createClass({
   mixins: [ReactFireMixin],
   componentWillMount: function() {
-    this.bindAsArray(firebaseRef.limitToLast(50), "orderList");
+    this.bindAsArray(firebaseRef.orderByChild('category').equalTo('consume').limitToLast(50), "orderList");
   },
   getInitialState: function() {
     return {

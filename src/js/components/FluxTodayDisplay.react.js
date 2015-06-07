@@ -1,13 +1,7 @@
 var React = require('react');
-var lunchorderStore = require("../stores/LunchorderStore");
 var FluxTodayDisplayEntry = require('./FluxTodayDisplayEntry.react');
 
 var FluxTodayDisplay = React.createClass({
-  getInitialState: function(){
-    return {
-      list: lunchorderStore.getOrderList('today')
-    }
-  },
   summarize: function() {
     conclude = {}
     if (typeof this.props.list != "undefined") {
@@ -29,17 +23,6 @@ var FluxTodayDisplay = React.createClass({
     }
     return conclude
   },
-  componentDidMount: function(){
-    lunchorderStore.addChangeListener(this._onChange);
-  },
-  componentWillUnmount: function() {
-    lunchorderStore.removeChangeListener(this._onChange);
-  },
-  _onChange: function() {
-    this.setState({
-      list: lunchorderStore.getOrderList('today')
-    })
-  },
   render: function() {
     concludes = []
 	totalCount = 0
@@ -48,10 +31,10 @@ var FluxTodayDisplay = React.createClass({
     for (key in nowState) {
       concludes.push(<FluxTodayDisplayEntry count={nowState[key]['count']} price={nowState[key]['price']} dish={nowState[key]['dish']} names={nowState[key]['names'].join(',')} total={nowState[key]['total']}/>);
 		totalCount += nowState[key]['count']; 
-		totalPrice += parseFloat(nowState[key]['price']);
+		totalPrice += parseFloat(nowState[key]['total']);
 	}
     return (
-      <table className="table">
+      <table className="table table-hover">
         <tbody>
           <tr><th>dish</th><th>names</th><th>price</th><th>count</th><th>total</th></tr>
           {concludes}

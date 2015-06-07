@@ -3,6 +3,7 @@ var FilePickerMenu = require("./FilePickerMenu.react");
 var CountDown = require("./CountDown.react");
 var FluxOrder = require("./FluxOrder.react");
 var FluxMessage = require("./FluxMessage.react");
+var Adminarea = require("./Adminarea.react");
 
 firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
 firebaseUserRef = new Firebase("https://lunchwhat.firebaseio.com/Users/");
@@ -82,11 +83,6 @@ var FluxToday = React.createClass({
     thisAdd.createdAt = new Date();
     thisAdd.createdAtString = (new Date()).toDateString();
     thisAdd._id = makeid();
-    thisAdjust = {
-      user_name: thisAdd.name,
-      actionType: thisAdd.category,
-      credit: thisAdd.price
-    }
     firebaseRef.push(thisAdd);
 	newAmount = (parseFloat(this.state.currentUserAmount)-parseFloat(thisAdd.price)).toString(); 
 	this.state.currentUserAmount = newAmount; 
@@ -106,20 +102,15 @@ var FluxToday = React.createClass({
       }
     }
     this.setState(temp);
-    console.log(temp);
     this.bindAsArray(firebaseRef.orderByChild('name').equalTo(this.state.currentUser).limitToLast(30), "orderList");
   },
   removeItem: function(name, price) {
-	  console.log(name); 
-	  console.log(price);
 	  for (i=0; i<this.state.users.length; i++) {
 		  if (this.state.users[i].user_name == name) {
 			  currentAmount = this.state.users[i].user_amount; 
 		  }
 	  }
-	  console.log(currentAmount);
 	  newAmount = (parseFloat(currentAmount)+parseFloat(price)).toString(); 
-	  console.log(newAmount)
     firebaseUserRef.orderByChild("user_name").equalTo(name).on('child_added', function(snapshot){
       tempFirebaseRef =  new Firebase("https://lunchwhat.firebaseio.com/Users/"+snapshot.key());
       tempFirebaseRef.child('user_amount').set(newAmount);
@@ -129,6 +120,38 @@ var FluxToday = React.createClass({
 		this.state.currentUserAmount = newAmount; 
 	}
   },
+  addCredit: function() {
+    thisAdd = {}
+    thisAdd.name = document.getElementById('nameInput').value;
+    thisAdd.dish = "Add credit";
+    thisAdd.price = document.getElementById('creditAdd').value;
+    if (thisAdd.price == "") {
+			alert("Can't leave it blank!");
+			return false;
+		}
+		if (isNaN(thisAdd.price)) {
+			alert("Price must be numbers");
+			return false;
+		}
+    document.getElementById('creditAdd').value = '';
+    thisAdd.category = 'save';
+    thisAdd.createdAt = new Date();
+    thisAdd.createdAtString = (new Date()).toDateString();
+    thisAdd._id = makeid();
+    thisAdjust = {
+      user_name: thisAdd.name,
+      actionType: thisAdd.category,
+      credit: thisAdd.price
+	}
+	firebaseRef.push(thisAdd);
+	newAmount = (parseFloat(this.state.currentUserAmount)+parseFloat(thisAdd.price)).toString(); 
+	this.state.currentUserAmount = newAmount; 
+    firebaseUserRef.orderByChild("user_name").equalTo(thisAdd.name).on('child_added', function(snapshot){
+      tempFirebaseRef =  new Firebase("https://lunchwhat.firebaseio.com/Users/"+snapshot.key());
+      tempFirebaseRef.child('user_amount').set(newAmount);
+      tempFirebaseRef.off();
+    });
+  }, 
   render: function() {
     return (
       <div id="FluxToday" class="mui-container">
@@ -143,6 +166,8 @@ var FluxToday = React.createClass({
         </form>
         <FluxOrder removeItem={this.removeItem}/>
         <FluxMessage orderList={this.state.orderList} currentUser={this.state.currentUser} currentUserAmount={this.state.currentUserAmount} ref='fluxMessage'/>
+		<h2 className="sub-header">For admin only</h2>
+		<Adminarea currentUser={this.state.currentUser} addCredit={this.addCredit}/>
       </div>
     )
   }
