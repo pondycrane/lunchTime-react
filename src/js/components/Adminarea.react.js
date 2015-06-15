@@ -1,7 +1,5 @@
 var React = require('react');
 
-firebaseStoresRef = new Firebase("https://lunchwhat.firebaseio.com/Stores/");
-
 var StoreListing = React.createClass({
 	render: function(){
 		return <option value={this.props.storeName}>{this.props.storeName}</option>
@@ -9,13 +7,6 @@ var StoreListing = React.createClass({
 })
 
 var Adminarea = React.createClass({
-	mixins: [ReactFireMixin],
-	componentWillMount: function() {
-		this.bindAsObject(firebaseStoresRef, "stores"); 
-	},
-	getInitialState: function() {
-		return {stores:{}}
-	},
 	addCredit: function(event) {
 		event.preventDefault();
 		if (typeof this.props.addCredit === 'function') {
@@ -63,12 +54,13 @@ var Adminarea = React.createClass({
 	}, 
 	selectChange: function() {
 		restaurantID = document.getElementById("restaurantSelect").value; 
-		currentRestaurantRef = new Firebase("https://lunchwhat.firebaseio.com/nowRestaurant/");
-		currentRestaurantRef.set(this.state.stores[restaurantID]); 
+		currentRestaurantRef = new Firebase("https://lunchwhat.firebaseio.com/nowStore/");
+		currentRestaurantRef.set(restaurantID); 
+		//currentRestaurantRef.set(this.props.stores[restaurantID]); 
 	}, 
 	render: function() {
 		storeShowcase = []
-		for (storeName in this.state.stores) {
+		for (storeName in this.props.stores) {
 			storeShowcase.push(<StoreListing storeName={storeName}/>); 
 		}
 		return (

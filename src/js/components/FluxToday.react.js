@@ -7,6 +7,8 @@ var Adminarea = require("./Adminarea.react");
 
 firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
 firebaseUserRef = new Firebase("https://lunchwhat.firebaseio.com/Users/");
+currentRestaurantRef = new Firebase("https://lunchwhat.firebaseio.com/nowStore/");
+firebaseStoresRef = new Firebase("https://lunchwhat.firebaseio.com/Stores/");
 
 function makeid() {
     var text = "";
@@ -50,12 +52,16 @@ var FluxToday = React.createClass({
   componentWillMount: function() {
     this.bindAsArray(firebaseRef.orderByChild('name').equalTo(this.state.currentUser).limitToLast(30), "orderList");
 	this.bindAsArray(firebaseUserRef.orderByChild("user_name"), "users"); 
+	this.bindAsObject(currentRestaurantRef, "nowStore"); 
+	this.bindAsObject(firebaseStoresRef, "stores"); 
   },
   getInitialState: function() {
     return {
-	users: [{"user_name":"Peter","user_amount":"0"}],
-      currentUser: 'Peter',
-      currentUserAmount: "0"
+		users: [{"user_name":"Peter","user_amount":"0"}],
+		  currentUser: 'Peter',
+		  currentUserAmount: "0", 
+		  nowStore: "", 
+		stores:{}
     }
   },
   addItem: function(event){
@@ -91,6 +97,21 @@ var FluxToday = React.createClass({
       tempFirebaseRef.child('user_amount').set(newAmount);
       tempFirebaseRef.off();
     });
+	inThere = false; 
+	if ('menu' in this.state.stores[this.state.nowStore] == false) {
+		menuAddRef = new Firebase("https://lunchwhat.firebaseio.com/Stores/"+this.state.nowStore+'/menu/'); 
+		menuAddRef.push({dishName: thisAdd.dish, dishPrice: thisAdd.price}); 
+		return false; 
+	}
+	for (i=0; i<this.state.stores[this.state.nowStore].menu.length; i++) {
+		if (this.state.stores[this.state.nowStore].menu[i].dishName == thisAdd.dish && this.state.stores[this.state.nowStore].menu[i].dishPrice == thisAdd.price) {
+			inThere = true; 
+		}
+	}
+	if (inThere == false) {
+		menuAddRef = new Firebase("https://lunchwhat.firebaseio.com/Stores/"+this.state.nowStore+'/menu/'); 
+		menuAddRef.push({dishName: thisAdd.dish, dishPrice: thisAdd.price}); 
+	}
   },
   handleChange: function(nowUser) {
     currentUser = nowUser;
@@ -153,9 +174,14 @@ var FluxToday = React.createClass({
     });
   }, 
   render: function() {
+	  if (this.state.nowStore == '') {
+		  currentStore = {filePickerKey:''}
+	  } else {
+		  currentStore = this.state.stores[this.state.nowStore]; 
+	  }
     return (
       <div id="FluxToday" class="mui-container">
-        <FilePickerMenu/>
+        <FilePickerMenu nowStore={currentStore}/>
 		<h2 className="sub-header">Order now!</h2>
 		<CountDown/>
         <form>
@@ -167,7 +193,7 @@ var FluxToday = React.createClass({
         <FluxOrder removeItem={this.removeItem}/>
         <FluxMessage orderList={this.state.orderList} currentUser={this.state.currentUser} currentUserAmount={this.state.currentUserAmount} ref='fluxMessage'/>
 		<h2 className="sub-header">For admin only</h2>
-		<Adminarea currentUser={this.state.currentUser} addCredit={this.addCredit}/>
+		<Adminarea stores={this.state.stores} currentUser={this.state.currentUser} addCredit={this.addCredit}/>
       </div>
     )
   }
