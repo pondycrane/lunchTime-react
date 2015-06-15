@@ -49,7 +49,7 @@ var FluxToday = React.createClass({
   mixins: [ReactFireMixin],
   componentWillMount: function() {
     this.bindAsArray(firebaseRef.orderByChild('name').equalTo(this.state.currentUser).limitToLast(30), "orderList");
-	this.bindAsArray(firebaseUserRef, "users"); 
+	this.bindAsArray(firebaseUserRef.orderByChild("user_name"), "users"); 
   },
   getInitialState: function() {
     return {

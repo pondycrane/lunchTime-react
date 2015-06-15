@@ -24,6 +24,14 @@ var Adminarea = React.createClass({
 	},
 	pickin: function(event) {
 		event.preventDefault(); 
+		if (document.getElementById('storeNameInput').value == "") {
+			alert("Can't leave Store Name blank!");
+			return false;
+		}
+		if (document.getElementById('storePhoneInput').value == "") {
+			alert("Can't leave Phone blank!");
+			return false;
+		}
 		filepicker.setKey('AiD66Zr4PS4aUqLQzYQmbz');
 		filepicker.pickAndStore(
 		  {
@@ -53,6 +61,11 @@ var Adminarea = React.createClass({
 		  }
 		);
 	}, 
+	selectChange: function() {
+		restaurantID = document.getElementById("restaurantSelect").value; 
+		currentRestaurantRef = new Firebase("https://lunchwhat.firebaseio.com/nowRestaurant/");
+		currentRestaurantRef.set(this.state.stores[restaurantID]); 
+	}, 
 	render: function() {
 		storeShowcase = []
 		for (storeName in this.state.stores) {
@@ -60,7 +73,7 @@ var Adminarea = React.createClass({
 		}
 		return (
 			<div id="Adminarea">
-				<select>
+				<select id="restaurantSelect" onChange={this.selectChange}>
 					{storeShowcase}
 				</select>
 				<form>
