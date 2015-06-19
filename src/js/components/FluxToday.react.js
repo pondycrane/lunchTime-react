@@ -4,7 +4,6 @@ var CountDown = require("./CountDown.react");
 var FluxOrder = require("./FluxOrder.react");
 var FluxMessage = require("./FluxMessage.react");
 var Adminarea = require("./Adminarea.react");
-var ReactDatalist = require('react-datalist')
 
 firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
 firebaseUserRef = new Firebase("https://lunchwhat.firebaseio.com/Users/");
