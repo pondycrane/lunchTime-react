@@ -4,6 +4,7 @@ var CountDown = require("./CountDown.react");
 var FluxOrder = require("./FluxOrder.react");
 var FluxMessage = require("./FluxMessage.react");
 var Adminarea = require("./Adminarea.react");
+var ReactDatalist = require('react-datalist')
 
 firebaseRef = new Firebase("https://lunchwhat.firebaseio.com/Orders/");
 firebaseUserRef = new Firebase("https://lunchwhat.firebaseio.com/Users/");
@@ -61,7 +62,8 @@ var FluxToday = React.createClass({
 		  currentUser: 'Peter',
 		  currentUserAmount: "0", 
 		  nowStore: "", 
-		stores:{}
+		stores:{}, 
+		currentStore:{}
     }
   },
   addItem: function(event){
@@ -103,7 +105,7 @@ var FluxToday = React.createClass({
 		menuAddRef.push({dishName: thisAdd.dish, dishPrice: thisAdd.price}); 
 		return false; 
 	}
-	for (i=0; i<this.state.stores[this.state.nowStore].menu.length; i++) {
+	for (i in this.state.stores[this.state.nowStore].menu) {
 		if (this.state.stores[this.state.nowStore].menu[i].dishName == thisAdd.dish && this.state.stores[this.state.nowStore].menu[i].dishPrice == thisAdd.price) {
 			inThere = true; 
 		}
@@ -173,23 +175,38 @@ var FluxToday = React.createClass({
       tempFirebaseRef.off();
     });
   }, 
+  handleMenuSelection: function() {
+	dishInput = document.getElementById('dishInput').value; 
+	priceInputValue = ''; 
+	for (key in this.state.currentStore.menu) {
+	  if (this.state.currentStore.menu[key].dishName == dishInput) {
+		  priceInputValue = this.state.currentStore.menu[key].dishPrice; 
+	  }
+	}
+	document.getElementById('priceInput').value = priceInputValue
+  },
   render: function() {
 	  if (this.state.nowStore == '') {
-		  currentStore = {filePickerKey:''}
+		  this.state.currentStore = {filePickerKey:''}
 	  } else {
-		  currentStore = this.state.stores[this.state.nowStore]; 
+		  this.state.currentStore = this.state.stores[this.state.nowStore]; 
+	  }	  
+	  if ('menu' in this.state.currentStore == false) {
+		  this.state.currentStore.menu = {}
 	  }
+	  testListData = ["yo","man"]; 
     return (
       <div id="FluxToday" class="mui-container">
-        <FilePickerMenu nowStore={currentStore}/>
+        <FilePickerMenu nowStore={this.state.currentStore}/>
 		<h2 className="sub-header">Order now!</h2>
 		<CountDown/>
         <form>
           <UserOptions data={this.state.users} currentUser={this.state.currentUser} onChange={this.handleChange} ref="userOptions"/>
-          <input id="dishInput" placeholder="Dish Name"></input>
+		  <input id="dishInput" list="DataList" placeholder="Dish Name" onChange={this.handleMenuSelection}></input>
+		  <DataList useNative={true} options={this.state.currentStore.menu}/>
           <input id="priceInput" placeholder="Price"></input>
           <button onClick={this.addItem} type="submit">Add order</button>
-        </form>
+        </form>		
         <FluxOrder removeItem={this.removeItem}/>
         <FluxMessage orderList={this.state.orderList} currentUser={this.state.currentUser} currentUserAmount={this.state.currentUserAmount} ref='fluxMessage'/>
 		<h2 className="sub-header">For admin only</h2>
@@ -197,6 +214,35 @@ var FluxToday = React.createClass({
       </div>
     )
   }
+})
+
+var DataListOption = React.createClass({
+	render: function() {
+		var classes = 'react-datalist-option'
+		return (
+			<option className={classes}>{this.props.option}</option>	
+		)
+	}
+})
+
+var DataList = React.createClass({
+	render: function() {
+		options = []
+		for (i in this.props.options) {
+			options.push(<DataListOption option={this.props.options[i].dishName}/>)
+		}
+		var containerStyle = {}
+        if (!this.props.useNative) {
+            if (this.props.hide) containerStyle.display = 'none'
+            else if (this.props.options.length == 0) containerStyle.display = 'none'
+            else containerStyle.display = 'block'
+        }
+		return (
+			<datalist id="DataList">
+				{options}
+			</datalist>
+		)
+	}
 })
 
 module.exports = FluxToday;
